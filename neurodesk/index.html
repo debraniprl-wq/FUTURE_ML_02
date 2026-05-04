@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeuroDesk — AI-Powered Support Intelligence Platform</title>
+  <meta name="description" content="NeuroDesk automatically classifies, prioritizes, and analyzes customer support tickets in real time using machine learning." />
+  <meta name="keywords" content="AI support, ticket classification, customer support automation, SaaS" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+
+  <!-- Papa Parse (CSV) -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <span class="brand-name">NeuroDesk</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#/" class="nav-item" data-page="landing" id="nav-landing">
+          <span class="nav-icon"><i data-lucide="home"></i></span>
+          <span class="nav-label">Home</span>
+        </a>
+        <a href="#/dashboard" class="nav-item" data-page="dashboard" id="nav-dashboard">
+          <span class="nav-icon"><i data-lucide="layout-dashboard"></i></span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="#/analyze" class="nav-item" data-page="analyze" id="nav-analyze">
+          <span class="nav-icon"><i data-lucide="brain"></i></span>
+          <span class="nav-label">Analyze</span>
+        </a>
+        <a href="#/upload" class="nav-item" data-page="upload" id="nav-upload">
+          <span class="nav-icon"><i data-lucide="upload-cloud"></i></span>
+          <span class="nav-label">Bulk Upload</span>
+        </a>
+        <a href="#/insights" class="nav-item" data-page="insights" id="nav-insights">
+          <span class="nav-icon"><i data-lucide="bar-chart-2"></i></span>
+          <span class="nav-label">Insights</span>
+        </a>
+        <a href="#/team" class="nav-item" data-page="team" id="nav-team">
+          <span class="nav-icon"><i data-lucide="users"></i></span>
+          <span class="nav-label">Team</span>
+        </a>
+        <a href="#/integrations" class="nav-item" data-page="integrations" id="nav-integrations">
+          <span class="nav-icon"><i data-lucide="blocks"></i></span>
+          <span class="nav-label">Integrations</span>
+        </a>
+        <a href="#/settings" class="nav-item" data-page="settings" id="nav-settings">
+          <span class="nav-icon"><i data-lucide="settings"></i></span>
+          <span class="nav-label">Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-avatar-block">
+          <div class="user-avatar">AD</div>
+          <div class="user-info">
+            <span class="user-name">Agnimitra Dey</span>
+            <span class="user-role" id="sidebar-role-badge">Admin</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+      <!-- Top Navbar -->
+      <header class="topbar" id="topbar">
+        <div class="topbar-left">
+          <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="page-breadcrumb" id="page-breadcrumb">Dashboard</div>
+        </div>
+        <div class="topbar-right">
+          <div class="search-bar" id="global-search-wrap">
+            <i data-lucide="search"></i>
+            <input type="text" placeholder="Search tickets..." id="global-search" />
+          </div>
+          <button class="icon-btn notif-btn" id="notif-btn" aria-label="Notifications">
+            <i data-lucide="bell"></i>
+            <span class="notif-badge" id="notif-badge">3</span>
+          </button>
+          <button class="icon-btn theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+            <i data-lucide="sun" id="theme-icon"></i>
+          </button>
+          <div class="role-toggle-wrap">
+            <button class="role-btn active" id="role-admin-btn" onclick="App.setRole('admin')">Admin</button>
+            <button class="role-btn" id="role-agent-btn" onclick="App.setRole('agent')">Agent</button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Notification Panel -->
+      <div class="notif-panel hidden" id="notif-panel">
+        <div class="notif-panel-header">
+          <span>Notifications</span>
+          <button onclick="document.getElementById('notif-panel').classList.add('hidden')"><i data-lucide="x"></i></button>
+        </div>
+        <div class="notif-list" id="notif-list"></div>
+      </div>
+
+      <!-- Page Content -->
+      <main class="page-content" id="page-content">
+        <!-- Rendered by JS -->
+      </main>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="js/data.js"></script>
+  <script src="js/classifier.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/pages/landing.js"></script>
+  <script src="js/pages/dashboard.js"></script>
+  <script src="js/pages/analyzer.js"></script>
+  <script src="js/pages/upload.js"></script>
+  <script src="js/pages/insights.js"></script>
+  <script src="js/pages/team.js"></script>
+  <script src="js/pages/integrations.js"></script>
+  <script src="js/pages/settings.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
